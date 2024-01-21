@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="found.css">
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+        header {
+            background-color: #912338;
+            color: white; 
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        #searchContainer {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        #searchBar {
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            margin-right: 20px;
+        }
+
+        #searchContainer button {
+            background-color: #0074D9;
+            color: #f2f2f2;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        main {
+            padding-left: 220px;
+        }
+
+        #foundObjectBtn {
+            background-color: #912338;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #listContainer {
+            padding: 20px;
+            color: black;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            margin-bottom: 1em;
+            margin: 3em;
+        }
+        
+
+        #listContainer p {
+            margin: 10px 0;
+            font-size: 16px;color: black;
+            line-height: 1.5;
+           
+
+        }
+
+        #listContainer img {
+            max-width: 100%;
+            height: auto;
+            
+        }
+        
+        nav {
+    display: flex;
+    justify-content: center;
+    background-color: #444;
+    padding: 0.5em;
+}
+ 
+ 
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 1em;
+    margin: 0 1em;
+}
+.head_2{
+    background-color: white;
+    color: #000;
+}
+
+        #sortingBar {
+            position: absolute;
+            left: 0;
+            top: 40; 
+            height: 100%;
+            width: 200px;
+            background-color: #333;
+            padding: 20px 0;
+        }
+
+        #sortingBar a {
+            display: block;
+            color: #f2f2f2;
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #sortingBar a:hover {
+            background-color: #555;
+        }
+        p{
+            color: white;
+            padding-left:10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>U Lose I Find</h1>
+    </header>
+
+    <nav>
+        <a href="lost.html">Lost Items</a>
+        <a href="found.html">Found Items</a>
+        <button id="logout">Log Out</button>
+
+    </nav>
+
+    <!-- <div id="sortingBar">
+        <p>Sort by buildings</p>
+        <a href="#">H</a>
+        <a href="#">JMSB</a>
+        <a href="#">LB</a>
+        <a href="#">EV</a>
+        <a href="#">CL</a>
+        <a href="#">FB</a>
+        <a href="#">FG</a>
+    </div> -->
+
+    
+        <!-- <h1 id="head_2">College Lost & Found</h1> -->
+        <div id="searchContainer">
+            <form action="#">
+                <input type="text" id="searchBar" placeholder="Search...">
+                <!-- <button type="submit">
+                    <i class="fa fa-search"></i>
+                </button> -->
+            </form>
+        </div>
+    
+   
+    <main>
+        <button id="foundObjectBtn">Click Here To Post A Found Object</button>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span id="closeBtn" class="close">&times;</span>
+                <form id="lostAndFoundForm">
+                    <label for="title">Title</label><br>
+                    <input type="text" id="title" name="title"><br>
+                    <label for="description">Description</label><br>
+                    <textarea id="description" name="description"></textarea><br>
+                    <label for="building">Building</label><br>
+                    <input type="text" id="building" name="building"><br>
+                    <label for="roomNo">Room No.</label><br>
+                    <input type="number" id="roomNo" name="roomNo"><br>
+                    <label for="imageUpload">Upload Image</label><br>
+                    <input type="file" id="imageUpload" name="imageUpload" accept=".jpg, .jpeg, .png" onchange="previewImage(event)"><br>
+                    <input type="submit" value="Submit">
+                </form>
+                <img id="imagePreview" src="#" alt="Image Preview">
+            </div>
+        </div>
+        <div id="listContainer">
+            <!-- List items will go here -->
+        </div>
+    </main>
+    <!-- <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('imagePreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        document.getElementById('lostAndFoundForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var title = document.getElementById('title').value;
+            var description = document.getElementById('description').value;
+            var building = document.getElementById('building').value;
+            var roomNo = document.getElementById('roomNo').value;
+            var image = document.getElementById('imagePreview').src;
+
+            var listItem = '<p>Title: ' + title + '</p>';
+            listItem += '<p>Description: ' + description + '</p>';
+            listItem += '<p>Building: ' + building + '</p>';
+            listItem += '<p>Room No.: ' + roomNo + '</p>';
+            listItem += '<p>Image: <img src="' + image + '" alt="Uploaded Image"></p>';
+
+            document.getElementById('listContainer').innerHTML += listItem;
+
+            // Close the modal after form submission
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        });
+
+        var modal = document.getElementById("myModal");
+        var btn = document.getElementById("foundObjectBtn");
+        var span = document.getElementById("closeBtn");
+
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script> -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    
+    <script>
+         // Initialize Firebase
+         var firebaseConfig = {
+            apiKey: "AIzaSyClvdDtpSfKhzz1ePlQl62GsDt6McUffD4",
+            authDomain: "lost-and-found-concordia.firebaseapp.com",
+            projectId: "lost-and-found-concordia",
+            storageBucket: "lost-and-found-concordia.appspot.com",
+            messagingSenderId: "64397139852",
+            appId: "1:64397139852:web:457c51e7d9373f533bc0a9",
+            measurementId: "G-BY09LBKX21"
+         };
+         firebase.initializeApp(firebaseConfig);
+    
+         var database = firebase.database();
+    
+         function previewImage(event) {
+                var reader = new FileReader();
+                reader.onload = function(){
+                    var output = document.getElementById('imagePreview');
+                    output.src = reader.result;
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+    
+            document.getElementById('lostAndFoundForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+    
+                var title = document.getElementById('title').value;
+                var description = document.getElementById('description').value;
+                var building = document.getElementById('building').value;
+                var roomNo = document.getElementById('roomNo').value;
+                var image = document.getElementById('imagePreview').src;
+               
+                var listItem = '<p>Title: ' + title + '</p>';
+                listItem += '<p>Description: ' + description + '</p>';
+                listItem += '<p>Building: ' + building + '</p>';
+                listItem += '<p>Room No.: ' + roomNo + '</p>';
+                listItem += '<p>Image: <img src="' + image + '" alt="Uploaded Image"></p>';
+    
+                document.getElementById('listContainer').innerHTML += listItem;
+    
+                // Write data to Firebase
+                var newItemRef = firebase.database().ref('found_items');
+                newItemRef.push({
+                  title: title,
+                  description: description,
+                  building: building,
+                  roomNo: roomNo,
+                  image: image
+                });
+    
+                // Close the modal after form submission
+                var modal = document.getElementById("myModal");
+                modal.style.display = "none";
+            });
+    
+            var modal = document.getElementById("myModal");
+            var btn = document.getElementById("foundObjectBtn");
+            var span = document.getElementById("closeBtn");
+    
+            btn.onclick = function() {
+                modal.style.display = "block";
+            }
+    
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+    
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+           // Clear the list container
+     document.getElementById('listContainer').innerHTML = '';
+
+// Read data from Firebase
+var itemsRef = database.ref('found_items');
+itemsRef.on('value', function(snapshot) {
+   snapshot.forEach(function(childSnapshot) {
+       var childData = childSnapshot.val();
+       
+       var listItem = '<p><h2>Title: ' + childData.title + '</h2></p>';
+       listItem += '<p ><b style="color:#912338;">Description: </b>' + childData.description + '</p>';
+       listItem += '<p><b style="color:#912338;">Building: </b>' + childData.building + '</p>';
+       listItem += '<p><b style="color:#912338;">Room No.: </b>' + childData.roomNo + '</p>';
+       listItem += '<p><b style="color:#912338;">Image: <img src="' + childData.image + '" alt="Uploaded Image"></p><hr>';
+       document.getElementById('listContainer').innerHTML += listItem;
+   });
+});
+    </script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
+    import {
+      getAuth,
+      signOut,
+    } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyClvdDtpSfKhzz1ePlQl62GsDt6McUffD4",
+      authDomain: "lost-and-found-concordia.firebaseapp.com",
+      projectId: "lost-and-found-concordia",
+      storageBucket: "lost-and-found-concordia.appspot.com",
+      messagingSenderId: "64397139852",
+      appId: "1:64397139852:web:457c51e7d9373f533bc0a9",
+      measurementId: "G-BY09LBKX21",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const database = getDatabase(app);
+    const auth = getAuth();
+
+    document.getElementById("logout").addEventListener("click", (e) => {
+      signOut(auth)
+        .then(() => {
+          // Sign-out successful.
+          alert("User logged out.");
+
+          // Redirect to the index.html page
+          window.location.href = 'index.html';
+        })
+        .catch((error) => {
+          // An error happened.
+          const errorMessage = error.message;
+          alert(errorMessage);
+        });
+    });
+  </script>
+</body>
+</html>

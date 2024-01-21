@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost and Found Concordia</title>
+    <link rel="stylesheet" href = "styles.css">
+        
+</head>
+
+<body>
+
+    <header>
+        <h1>u Lose i Find</h1>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="lost.html">Lost Items</a>
+        <a href="found.html">Found Items</a>
+    </nav>
+
+    <div class="verification-container">
+        <h2>Verification</h2>
+        <p>Upload a picture of your school ID for verification:</p>
+        <form action="uploadVerification.php" method="post" enctype="multipart/form-data">
+            <input type="file" name="verificationFile" accept="image/*" required>
+            <button type="submit">Submit Verification</button>
+        </form>
+    </div>
+
+    
+</body>
+
+</html>

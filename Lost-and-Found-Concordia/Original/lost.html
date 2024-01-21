@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lost and Found</title>
+    <!-- <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #3498db;
+            padding: 0.5em;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 1em;
+            margin: 0 1em;
+        }
+
+        nav button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        nav button:hover {
+            background-color: #2184b7;
+        }
+
+        main {
+            padding-left: 220px;
+        }
+
+        #foundObjectBtn {
+            background-color: #df4949;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #listContainer {
+            padding: 20px;
+            color: black;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        #listContainer p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: black;
+            line-height: 1.5;
+        }
+
+        #listContainer img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #sortingBar {
+            position: absolute;
+            left: 0;
+            top: 40;
+            height: 100%;
+            width: 200px;
+            background-color: #333;
+            padding: 20px 0;
+        }
+
+        #sortingBar a {
+            display: block;
+            color: #f2f2f2;
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #sortingBar a:hover {
+            background-color: #555;
+        }
+
+        p {
+            color: black;
+            padding-left: 10px;
+        }
+
+        #searchContainer {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        #searchBar {
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            margin-right: 20px;
+        }
+
+        #searchContainer button {
+            background-color: #0074D9;
+            color: #f2f2f2;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #searchContainer button:hover {
+            background-color: #0056b3;
+        }
+    </style> -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .items {
+        margin-top: 2em;
+      }
+      .item {
+        border: 1px solid #ddd;
+        padding: 1em;
+        margin-bottom: 1em;
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+      }
+
+      header {
+        background-color: #912338;
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+      }
+      nav {
+        display: flex;
+        justify-content: center;
+        background-color: #343a40;
+        padding: 0.5em;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 1em;
+        margin: 0 1em;
+      }
+      .head_2 {
+        background-color: white;
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>U Lose I Find</h1>
+    </header>
+
+    <nav>
+      <a href="login.html">Lost Items</a>
+      <a href="found.html">Found Items</a>
+      <button id="logout">Log Out</button>
+    </nav>
+    <h1>Report your Lost Items</h1>
+
+    <form id="lostItemForm">
+      <label for="itemTitle">Item Title:</label>
+      <input type="text" id="itemTitle" name="itemTitle" required />
+
+      <label for="itemDescription">Item Description:</label>
+      <textarea id="itemDescription" name="itemDescription" required></textarea>
+
+      <button type="submit" id="postButton">Post</button>
+    </form>
+
+    <div class="items">
+      <!-- Lost items will be added here -->
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+
+    <script>
+      // Initialize Firebase
+      var firebaseConfig = {
+        apiKey: "AIzaSyClvdDtpSfKhzz1ePlQl62GsDt6McUffD4",
+        authDomain: "lost-and-found-concordia.firebaseapp.com",
+        projectId: "lost-and-found-concordia",
+        storageBucket: "lost-and-found-concordia.appspot.com",
+        messagingSenderId: "64397139852",
+        appId: "1:64397139852:web:457c51e7d9373f533bc0a9",
+        measurementId: "G-BY09LBKX21",
+      };
+      firebase.initializeApp(firebaseConfig);
+
+      var database = firebase.database();
+
+      document
+        .getElementById("lostItemForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          var itemTitle = document.getElementById("itemTitle").value;
+          var itemDescription =
+            document.getElementById("itemDescription").value;
+
+          var itemElement = document.createElement("div");
+          itemElement.className = "item";
+          itemElement.innerHTML =
+            "<h2>" +
+            "Item : " +
+            itemTitle +
+            "</h2><p>" +
+            "Description: " +
+            itemDescription +
+            "</p>";
+
+          document.querySelector(".items").appendChild(itemElement);
+
+          // Write data to Firebase
+          var newItemRef = database.ref("items").push();
+          newItemRef.set({
+            title: itemTitle,
+            description: itemDescription,
+          });
+        });
+
+      // Read data from Firebase
+      var itemsRef = database.ref("items");
+      itemsRef.on("value", function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          var childData = childSnapshot.val();
+          var itemElement = document.createElement("div");
+          itemElement.className = "item";
+          itemElement.innerHTML =
+            "<h2>" +
+            "Item : " +
+            childData.title +
+            "</h2><p>" +
+            "Description: " +
+            childData.description +
+            "</p>";
+          document.querySelector(".items").appendChild(itemElement);
+        });
+      });
+    </script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
+      import {
+        getAuth,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+      import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyClvdDtpSfKhzz1ePlQl62GsDt6McUffD4",
+        authDomain: "lost-and-found-concordia.firebaseapp.com",
+        projectId: "lost-and-found-concordia",
+        storageBucket: "lost-and-found-concordia.appspot.com",
+        messagingSenderId: "64397139852",
+        appId: "1:64397139852:web:457c51e7d9373f533bc0a9",
+        measurementId: "G-BY09LBKX21",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+      const auth = getAuth();
+
+      document.getElementById("logout").addEventListener("click", (e) => {
+        signOut(auth)
+          .then(() => {
+            // Sign-out successful.
+            alert("User logged out.");
+
+            // Redirect to the index.html page
+            window.location.href = "index.html";
+          })
+          .catch((error) => {
+            // An error happened.
+            const errorMessage = error.message;
+            alert(errorMessage);
+          });
+      });
+    </script>
+  </body>
+</html>
